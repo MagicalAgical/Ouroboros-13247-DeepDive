@@ -11,17 +11,17 @@ public class TestMotorTele extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        rightLower = hardwareMap.get(DcMotor.class, "rightLower");
+        rightLower = hardwareMap.get(DcMotor.class, "elevatorMotor");
         rightLower.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
         while (opModeIsActive()){
             if(gamepad1.x) {
-                rightLower.setPower(0.25);
+                rightLower.setPower(1);
             }else if(gamepad1.y){
                 rightLower.setPower(0);
             }else if(gamepad1.a){
-                rightLower.setPower(-0.25);
+                rightLower.setPower(1);
             }else{
                 rightLower.setPower(0);
             }
