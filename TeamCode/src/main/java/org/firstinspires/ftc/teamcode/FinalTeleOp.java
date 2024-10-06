@@ -60,6 +60,18 @@ public class FinalTeleOp extends LinearOpMode {
             rightUpper.setPower(v2 * 1);
             leftLower.setPower(v3 * 1);
             rightLower.setPower(v4 * 1);
+
+           //intake!!
+            if(gamepad2.x){
+                intakeOne.setPower((.8));
+                intakeTwo.setPower((-.8));
+            }else if(gamepad2.y){
+                intakeOne.setPower((-.8));
+                intakeTwo.setPower((.8));
+            }else{
+                intakeOne.setPower((0));
+                intakeTwo.setPower((0));
+            }
         }
     }
 
