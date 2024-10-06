@@ -28,7 +28,7 @@ public class FinalTeleOp extends LinearOpMode {
         leftUpper = hardwareMap.get(DcMotor.class, "leftUpper");
         rightUpper = hardwareMap.get(DcMotor.class, "rightUpper");
         leftLower = hardwareMap.get(DcMotor.class, "leftLower");
-        rightLower = hardwareMap.get(DcMotor.class, "rightLower");
+
         intakeOne = hardwareMap.get(DcMotor.class, "intakeOne");
         intakeTwo = hardwareMap.get(DcMotor.class, "intakeTwo");
         leftLift = hardwareMap.get(DcMotor.class, "leftLift");
