@@ -28,6 +28,7 @@ public class FinalTeleOp extends LinearOpMode {
         leftUpper = hardwareMap.get(DcMotor.class, "leftUpper");
         rightUpper = hardwareMap.get(DcMotor.class, "rightUpper");
         leftLower = hardwareMap.get(DcMotor.class, "leftLower");
+        rightLower = hardwareMap.get(DcMotor.class,"rightLower");
 
         intakeOne = hardwareMap.get(DcMotor.class, "intakeOne");
         intakeTwo = hardwareMap.get(DcMotor.class, "intakeTwo");
@@ -38,6 +39,8 @@ public class FinalTeleOp extends LinearOpMode {
         rightUpper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftLower.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightLower.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
 
         waitForStart();
         double triggerPowerAdjust = 1;
@@ -61,11 +64,14 @@ public class FinalTeleOp extends LinearOpMode {
             leftLower.setPower(v3 * 1);
             rightLower.setPower(v4 * 1);
 
-           //intake!!
+            //intake!!
+            // ask thepi - do i need to add zero power behavior for intake motors
             if(gamepad2.x){
-                intakeOne.setPower((.8));
+                telemetry.addData("I am hungry for blocks!",stuff);
+                intakeOne.setPower((.8)); //will need to reverse depending on position of motors
                 intakeTwo.setPower((-.8));
             }else if(gamepad2.y){
+                telemetry.addData("Im too full!",stuff);
                 intakeOne.setPower((-.8));
                 intakeTwo.setPower((.8));
             }else{
