@@ -21,7 +21,7 @@ public class TestMotorTele extends LinearOpMode {
             }else if(gamepad1.y){
                 rightLower.setPower(0);
             }else if(gamepad1.a){
-                rightLower.setPower(1);
+                rightLower.setPower(-1);
             }else{
                 rightLower.setPower(0);
             }
