@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -27,7 +28,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 import org.openftc.easyopencv.OpenCvPipeline;
 @Autonomous
-public class BlueRightPractice extends LinearOpMode {
+public class ObservationSide extends LinearOpMode {
     private DcMotor leftLift = null;
     private DcMotor rightLift = null;
     private Servo claw = null;
@@ -50,8 +51,16 @@ public class BlueRightPractice extends LinearOpMode {
             TrajectorySequence Left = drive.trajectorySequenceBuilder(new Pose2d())
                     .forward(15)
                     .lineToLinearHeading(new Pose2d(-94,1,Math.toRadians(135)))
-                    .addTemporalMarker()
                     .build();
+
+            TrajectorySequence Left1 = drive.trajectorySequenceBuilder(new Pose2d())
+                            .turn(Math.toRadians(45))
+                    .strafeLeft(100)
+                                    .build();
+
+            drive.followTrajectorySequence(Left);
+            drive.followTrajectorySequence(Left1);
         }
+
     }
 }
