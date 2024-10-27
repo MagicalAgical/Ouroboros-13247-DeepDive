@@ -27,7 +27,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 import org.openftc.easyopencv.OpenCvPipeline;
 @Autonomous
-public class Auto1 extends LinearOpMode{
+public class BasketSide extends LinearOpMode{
     private DcMotor leftLift = null;
     private DcMotor rightLift = null;
     private Servo claw = null;
@@ -53,7 +53,7 @@ public class Auto1 extends LinearOpMode{
                     .forward(19)
                     //.addTemporalMarker(3,()->{
 
-                   // })
+                    // })
                     .addDisplacementMarker(()->{
                         claw.setPosition(-1); // -1 is to open the claw
                     }) // pre-loaded block
@@ -68,14 +68,14 @@ public class Auto1 extends LinearOpMode{
                     .addDisplacementMarker(()->{
                         claw.setPosition(0); // 0 is to close the claw
                     })
-                    
+
                     .addTemporalMarker(x,()->{
                         Arm.setPower(-0.8);
                         sleep(x);
                     })
                     .lineToLinearHeading(new Pose2d(0,0,Math.toRadians(-45)))
                     .build();
-            
+
             TrajectorySequence Left2 = drive.trajectorySequenceBuilder(new Pose2d())
                     .addDisplacementMarker(()->{
                         claw.setPosition(-1);
