@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
+import android.graphics.NinePatch;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp
-public class FinalTeleOp extends LinearOpMode {
+public class New extends LinearOpMode {
     private DcMotor leftUpper = null;
     private DcMotor leftLower = null;
     private DcMotor rightUpper = null;
@@ -66,6 +68,7 @@ public class FinalTeleOp extends LinearOpMode {
         waitForStart();
         double triggerPowerAdjust = 1;
         double speedAdjust = 1.4;
+        int NintyDegrees = 747;
         int stuff = 0;
         while (opModeIsActive()) {
             double r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
@@ -88,14 +91,38 @@ public class FinalTeleOp extends LinearOpMode {
             //intake!!
             // ask thepi - do i need to add zero power behavior for intake motors
 
-            if (gamepad2.left_bumper && armTargetAngle < ARM_MAX_ANGLE) {
+            /* if (gamepad2.left_bumper && armTargetAngle < ARM_MAX_ANGLE) {
                 armTargetAngle += 2;
+                sleep(50);
+            } */
+
+         /*   if (gamepad2.right_bumper && armTargetAngle > ARM_MIN_ANGLE) {
+                armTargetAngle -= 2;
                 sleep(50);
             }
 
-            if (gamepad2.right_bumper && armTargetAngle > ARM_MIN_ANGLE) {
-                armTargetAngle -= 2;
-                sleep(50);
+          */
+
+            boolean changed = false;
+            if (gamepad1.a && !changed){
+                if (armMotor.getCurrentPosition() != NintyDegrees){
+                    armMotor.setTargetPosition(NintyDegrees);
+                    armMotor.setPower(0.5);
+                    sleep(50);
+                }else{
+                    if (gamepad2.left_bumper && armTargetAngle < ARM_MAX_ANGLE) {
+                        armTargetAngle += 2;
+                        sleep(50);
+                    }else if (gamepad2.right_bumper && armTargetAngle > ARM_MIN_ANGLE) {
+                        armTargetAngle -= 2;
+                        sleep(50);
+                    }else{
+                        armMotor.setPower(0);
+                    }
+                }
+
+            }else{
+                changed = false;
             }
 
 
