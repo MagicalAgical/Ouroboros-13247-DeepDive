@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 public class New extends LinearOpMode {
@@ -19,6 +20,7 @@ public class New extends LinearOpMode {
     private DcMotor rightLower = null;
     private DcMotor armMotor = null;
     private DcMotor liftMotor = null;
+    private Servo claw = null;
 
     private static double MOTOR_ADJUST = 0.75;
     private static final int ARM_COUNTS_PER_MOTOR_REV = 1996;
@@ -68,7 +70,7 @@ public class New extends LinearOpMode {
         waitForStart();
         double triggerPowerAdjust = 1;
         double speedAdjust = 1.4;
-        int NintyDegrees = 747;
+        int NintyDegrees = 499;
         int stuff = 0;
         while (opModeIsActive()) {
             double r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
@@ -88,21 +90,8 @@ public class New extends LinearOpMode {
             leftLower.setPower(v3 * 1);
             rightLower.setPower(v4 * 1);
 
-            //intake!!
-            // ask thepi - do i need to add zero power behavior for intake motors
 
-            /* if (gamepad2.left_bumper && armTargetAngle < ARM_MAX_ANGLE) {
-                armTargetAngle += 2;
-                sleep(50);
-            } */
-
-         /*   if (gamepad2.right_bumper && armTargetAngle > ARM_MIN_ANGLE) {
-                armTargetAngle -= 2;
-                sleep(50);
-            }
-
-          */
-
+            // Arm Control
             boolean changed = false;
             if (gamepad1.a && !changed){
                 if (armMotor.getCurrentPosition() != NintyDegrees){
@@ -110,34 +99,58 @@ public class New extends LinearOpMode {
                     armMotor.setPower(0.5);
                     sleep(50);
                 }else{
-                    if (gamepad2.left_bumper && armTargetAngle < ARM_MAX_ANGLE) {
-                        armTargetAngle += 2;
-                        sleep(50);
-                    }else if (gamepad2.right_bumper && armTargetAngle > ARM_MIN_ANGLE) {
-                        armTargetAngle -= 2;
-                        sleep(50);
-                    }else{
-                        armMotor.setPower(0);
-                    }
+
                 }
 
             }else{
                 changed = false;
             }
 
+            if (gamepad2.left_bumper && armTargetAngle < ARM_MAX_ANGLE) {
+                armTargetAngle += 2;
+                sleep(50);
+                /*
+                If the gamepad2 left bumper is pressed AND
+                the arm current angle is LESS than the arm max angle (180)
+                then the arm will go UP by 2 ticks per 50 milliseconds
+                 */
+            }else if (gamepad2.right_bumper && armTargetAngle > ARM_MIN_ANGLE) {
+                armTargetAngle -= 2;
+                sleep(50);
+                /*
+                If the gamepad2 right bumper is pressed AND
+                the arm current angle is GREATER than the arm min angle (65)
+                then the arm will go DOWN by 2 ticks per 50 milliseconds
+                 */
+            }else{
+                armMotor.setPower(0);
+                /*
+                If no button is pressed, the arm will not move
+                 */
+            }
 
             setArmPosition(armTargetAngle);
-
-
             double currentArmAngle = getArmAngle();
 
-
-            if (currentArmAngle >= 45.0) {
+            //Lift Control
+            if (currentArmAngle >= 65.0) {
+                /*
+                If the arms current angle is greater than 65
+                then the code below can be executed
+                 */
 
                 if (gamepad2.dpad_up) {
                     liftMotor.setPower(0.5);
+                    /*
+                    If the gamepad2 dpad-up is pressed
+                    the motor will go UP
+                     */
                 } else if (gamepad2.dpad_down) {
                     liftMotor.setPower(-0.5);
+                    /*
+                    If the gamepad2 dpad-down is pressed
+                    the motor will go DOWN
+                     */
                 } else {
                     liftMotor.setPower(0);
                 }
@@ -149,14 +162,19 @@ public class New extends LinearOpMode {
         }
     }
     private void setArmPosition(double angle) {
-        int targetPosition = (int) (angle / ARM_DEGREES_PER_COUNT);
+        int targetPosition = (int) (angle / ARM_DEGREES_PER_COUNT); // Converts degrees to tick position
         armMotor.setTargetPosition(targetPosition);
-        armMotor.setPower(0.3); // Adjust motor power as needed
+        armMotor.setPower(0.3);
     }
 
 
     private double getArmAngle() {
-        return armMotor.getCurrentPosition() * ARM_DEGREES_PER_COUNT;
+        return armMotor.getCurrentPosition() * ARM_DEGREES_PER_COUNT; // Retrieves current arm angle
+    }
+    private void setMotorPosition (double angle) {
+        int motorTargetPos = (int) (angle / ARM_DEGREES_PER_COUNT);
+        liftMotor.setTargetPosition(motorTargetPos);
+        liftMotor.setPower(0.5);
     }
 
 }
