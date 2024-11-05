@@ -14,11 +14,11 @@ public class TeleOp extends LinearOpMode {
     private DcMotor liftMotor = null;
 
     private static double MOTOR_ADJUST = 0.75;
-    private static final int ARM_COUNTS_PER_MOTOR_REV = 1996;
-    private static final double ARM_DEGREES_PER_COUNT = 360.0 / ARM_COUNTS_PER_MOTOR_REV;
+    public static final int ARM_COUNTS_PER_MOTOR_REV = 1996;
+    public static final double ARM_DEGREES_PER_COUNT = 360.0 / ARM_COUNTS_PER_MOTOR_REV;
 
-    private double armTargetAngle = 65.0;
-    private double liftTargetAngle = 0;
+    public double armTargetAngle = 65.0;
+    public double liftTargetAngle = 0;
     private static final double ARM_MAX_ANGLE = 180.0;
     private static final double ARM_MIN_ANGLE = 0.0;
 
@@ -57,7 +57,7 @@ public class TeleOp extends LinearOpMode {
 
         waitForStart();
         double triggerPowerAdjust = 1;
-        double speedAdjust = 1.4;
+        double speedAdjust = 1;
 
         while (opModeIsActive()) {
             double r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
@@ -68,27 +68,28 @@ public class TeleOp extends LinearOpMode {
             double v3 = r * Math.sin(robotAngle) + rightX;
             double v4 = r * Math.cos(robotAngle) - rightX;
 
-            v1 = (v1 * triggerPowerAdjust * -1) * speedAdjust;
-            v2 = (v2 * triggerPowerAdjust * -1) * speedAdjust;
-            v3 = (v3 * triggerPowerAdjust * -1) * speedAdjust;
-            v4 = (v4 * triggerPowerAdjust * -1) * speedAdjust;
-            leftUpper.setPower(v1 * 1);
-            rightUpper.setPower(v2 * 1);
-            leftLower.setPower(v3 * 1);
-            rightLower.setPower(v4 * 1);
+            v1 = (v1 * triggerPowerAdjust * -0.7) * speedAdjust;
+            v2 = (v2 * triggerPowerAdjust * -0.7) * speedAdjust;
+            v3 = (v3 * triggerPowerAdjust * -0.7) * speedAdjust;
+            v4 = (v4 * triggerPowerAdjust * -0.7) * speedAdjust;
+            leftUpper.setPower(v1 * 0.7);
+            rightUpper.setPower(v2 * 0.7);
+            leftLower.setPower(v3 * 0.7);
+            rightLower.setPower(v4 * 0.7);
 
             // Arm Movement
-            if (gamepad1.a) {
+            if (gamepad2.a) {
                 armTargetAngle = 90; // Set target angle to 90 degrees when 'a' is pressed
                 setArmPosition(armTargetAngle);
             } else if (gamepad2.left_bumper && armTargetAngle < ARM_MAX_ANGLE) {
                 armTargetAngle -= 2;
-                setArmPosition(armTargetAngle);
-                sleep(50);
+                setArmPosition(armTargetAngle); // decreases the arm angle by a value of 2 ticks
             } else if (gamepad2.right_bumper && armTargetAngle > ARM_MIN_ANGLE) {
                 armTargetAngle += 2;
+                setArmPosition(armTargetAngle); // increases the arm angle by a value of 2 ticks
+            }else if(gamepad2.b){
+                armTargetAngle = 175;
                 setArmPosition(armTargetAngle);
-                sleep(50);
             }
 
             double currentArmAngle = getArmAngle();
@@ -96,35 +97,88 @@ public class TeleOp extends LinearOpMode {
             // Lift Movement
             if (currentArmAngle >= 65.0) {
                 if (gamepad2.dpad_up) {
-                    liftTargetAngle += 2;
+                    liftTargetAngle += 2; // increases the motor tick value by a value of 2 ticks
                     setLiftPosition(liftTargetAngle);
                 } else if (gamepad2.dpad_down) {
-                    liftTargetAngle -= 2;
+                    liftTargetAngle -= 2; // decreases the motor tick value by a value of 2 ticks
+                    setLiftPosition(liftTargetAngle);
+                }else if(gamepad2.dpad_left){
+                    liftTargetAngle = 10;
                     setLiftPosition(liftTargetAngle);
                 } else {
                     liftMotor.setPower(0);
                 }
             }
 
+            /* if(gamepad2.x){
+              claw.setPosition()
+            }
+
+
+             */
+
             telemetry.addData("Arm Angle", currentArmAngle);
             telemetry.addData("Lift Position", liftMotor.getCurrentPosition());
+            telemetry.addData("Lift Angle Value", liftTargetAngle);
             telemetry.update();
         }
     }
 
-    private void setArmPosition(double angle) {
+    public void setArmPosition(double angle) {
         int targetPosition = (int) (angle / ARM_DEGREES_PER_COUNT);
         armMotor.setTargetPosition(targetPosition);
-        armMotor.setPower(0.3);
+        armMotor.setPower(0.6);
     }
 
-    private double getArmAngle() {
+    public double getArmAngle() {
         return armMotor.getCurrentPosition() * ARM_DEGREES_PER_COUNT;
     }
 
-    private void setLiftPosition (double angle) {
+    public void setLiftPosition (double angle) {
         int motorTargetPos = (int) (angle / ARM_DEGREES_PER_COUNT);
         liftMotor.setTargetPosition(motorTargetPos);
         liftMotor.setPower(0.5);
     }
 }
+
+/*
+   GAMEPAD INPUTS
+   --------------
+   GAMEPAD1
+   a - NONE
+   b - NONE
+   x - NONE
+   y - NONE
+
+   left stick - FORWARD/BACKWARD/STRAFE
+   right stick - TURNING
+
+   right-trig - NONE
+   left-trig - NONE
+
+   right-bump - NONE
+   left-bump - NONE
+
+   DPAD arrows - NONE
+
+   ------------------
+   GAMEPAD2
+
+   a - 90 DEGREE ARM VALUE
+   b - 175 DEGREE ARM VALUE
+   x - NONE
+   y - NONE
+
+   left-stick - NONE
+   right-stick - NONE
+
+   right-trig - NONE
+   left-trig - NONE
+
+   right-bump - ARM UP
+   left-bump ARM DOWN
+
+   dpad_up - LIFT UP
+   dpad_down - LIFT DOWN
+   dpad_left - LIFT POSITION AT 10
+ */

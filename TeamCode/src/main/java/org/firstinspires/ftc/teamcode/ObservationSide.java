@@ -59,7 +59,19 @@ public class ObservationSide extends LinearOpMode {
 
             drive.followTrajectorySequence(Left);
             drive.followTrajectorySequence(Left1);
+            Pose2d poseEstimate = drive.getPoseEstimate();
+            telemetry.addData("X", poseEstimate.getX());
+            telemetry.addData("Y", poseEstimate.getY());
+            telemetry.addData("Heading", poseEstimate.getHeading());
+            telemetry.addData("Arm Angle", Arm.getCurrentPosition());
+            telemetry.update();
         }
 
+
+
     }
+
+
+
+
 }
