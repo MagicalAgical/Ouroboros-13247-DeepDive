@@ -6,26 +6,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
+
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
-import org.openftc.easyopencv.OpenCvPipeline;
+
 @Autonomous
 public class RedLeft extends LinearOpMode{
 
@@ -45,9 +31,13 @@ public class RedLeft extends LinearOpMode{
                 .build();
 
 
-        Trajectory myTraj2 = drive.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(15,0,Math.toRadians(90)))
-                .build();
+        TrajectorySequence traj2 = drive.trajectorySequenceBuilder(new Pose2d())
+                        .turn(Math.toRadians(90))
+                        .build();
+
+
+
+
 
 
 
@@ -56,7 +46,16 @@ public class RedLeft extends LinearOpMode{
         if(isStopRequested()) return;
 
         drive.followTrajectory(myTrajectory);
-        drive.followTrajectory(myTraj2);
+        drive.followTrajectorySequence(traj2);
+
+
+        Pose2d poseEstimate = drive.getPoseEstimate();
+        telemetry.addData("finalX", poseEstimate.getX());
+        telemetry.addData("finalY", poseEstimate.getY());
+        telemetry.addData("finalHeading", poseEstimate.getHeading());
+        telemetry.update();
+
+        while (!isStopRequested() && opModeIsActive()) ;
 
     }
 }
